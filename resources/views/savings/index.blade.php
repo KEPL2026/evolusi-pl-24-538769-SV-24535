@@ -347,11 +347,27 @@
                             @if ($saving->notes)
                                 <div class="saving-desc">{{ $saving->notes }}</div>
                             @endif
-                            @if ($saving->target_date)
-                                <div style="font-size: 0.8rem; color: #854d0e; background-color: #fef9c3; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-top: 4px;">
-                                    Target: {{ $saving->target_date->format('d M Y') }}
-                                </div>
-                            @endif
+                            <div style="display: flex; gap: 6px; align-items: center; margin-top: 6px; flex-wrap: wrap;">
+                                @if ($saving->isReached())
+                                    <span style="font-size: 0.75rem; font-weight: 600; color: #065f46; background-color: #d1fae5; padding: 2px 8px; border-radius: 9999px;">
+                                        Tercapai
+                                    </span>
+                                @elseif ($saving->current_amount > 0)
+                                    <span style="font-size: 0.75rem; font-weight: 600; color: #1e40af; background-color: #dbeafe; padding: 2px 8px; border-radius: 9999px;">
+                                        Sedang Berjalan
+                                    </span>
+                                @else
+                                    <span style="font-size: 0.75rem; font-weight: 600; color: #475569; background-color: #f1f5f9; padding: 2px 8px; border-radius: 9999px;">
+                                        Belum Dimulai
+                                    </span>
+                                @endif
+
+                                @if ($saving->target_date)
+                                    <span style="font-size: 0.75rem; color: #854d0e; background-color: #fef9c3; padding: 2px 8px; border-radius: 4px;">
+                                        Target: {{ $saving->target_date->format('d M Y') }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
 
@@ -362,12 +378,13 @@
                             <span>{{ $saving->progress_percentage }}%</span>
                         </div>
                         <div class="progress-bar-bg" style="height: 10px;">
-                            <div class="progress-bar-fill" style="width: {{ $saving->progress_percentage }}%;"></div>
+                            <div class="progress-bar-fill" style="width: {{ $saving->progress_percentage }}%; background-color: {{ $saving->isReached() ? '#10b981' : '#3b82f6' }};"></div>
                         </div>
                     </div>
 
                     <div class="saving-stats">
                         <span>Terkumpul: <strong>Rp {{ number_format($saving->current_amount, 0, ',', '.') }}</strong></span>
+                        <span>Sisa: <strong style="color: {{ $saving->isReached() ? '#059669' : '#dc2626' }};">Rp {{ number_format($saving->remaining_amount, 0, ',', '.') }}</strong></span>
                         <span>Target: <strong>Rp {{ number_format($saving->target_amount, 0, ',', '.') }}</strong></span>
                     </div>
 
